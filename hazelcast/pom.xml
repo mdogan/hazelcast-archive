@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.hazelcast</groupId>
+        <artifactId>hazelcast-root</artifactId>
+        <version>1.8</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <name>hazelcast</name>
+    <artifactId>hazelcast</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+        <filters>
+            <filter>${basedir}/target/filter.properties</filter>
+        </filters>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>set-timestamp</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${project.build.directory}"/>
+                                <tstamp>
+                                    <format property="timestamp"
+                                            pattern="yyyyMMdd"/>
+                                </tstamp>
+                                <echo file="${basedir}/target/filter.properties"
+                                      message="timestamp=${timestamp}"/>
+                            </tasks>
+                        </configuration>
+                    </execution> 
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

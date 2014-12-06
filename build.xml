@@ -1,0 +1,60 @@
+<project basedir="." name="hazelcast" default="jar">
+
+    <property name="src.dir" value="hazelcast/src/main/java"/>
+    <property name="classes.dir" value="hazelcast/target/classes"/>
+    <property name="version" value="1.8"/>
+    <property name="hazelcast.jar.name" value="hazelcast-${version}.jar"/>
+
+
+    <target name="compile">
+        <delete dir="${classes.dir}" failonerror="false"/>
+        <mkdir dir="${classes.dir}"/>
+        <javac destdir="${classes.dir}" compiler="javac1.5" debug="on" nowarn="yes">
+            <src path="${src.dir}"/>
+        </javac>
+        <tstamp>
+            <format property="TODAY" pattern="yyyyMMdd" locale="en"/>
+        </tstamp>
+        <echo file="${classes.dir}/hazelcast-runtime.properties"
+              message="hazelcast.build=${TODAY}${line.separator}hazelcast.version=${version}"/>
+        <copy file="hazelcast/src/main/resources/hazelcast.xml" todir="${classes.dir}"/>
+
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar jarfile="${hazelcast.jar.name}">
+            <fileset dir="${src.dir}"/>
+            <fileset dir="${classes.dir}"/>
+            <manifest>
+                <attribute name="Built-By" value="Hazelcast.com"/>
+                <attribute name="Main-Class" value="com.hazelcast.examples.TestApp"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="javadoc">
+        <javadoc destdir="javadoc" author="true" version="true" use="true" windowtitle="Hazelcast API">
+             <fileset dir="hazelcast/src/main/java/" defaultexcludes="true">
+                <include name="**/nio/DataSerializable*"/>
+                <include name="**/core/**"/>
+                <include name="**/config/**"/>
+                <include name="**/jmx/**"/>
+                <include name="**/query/**"/>
+                <exclude name="**/*.html"/>
+            </fileset>
+             <fileset dir="hazelcast-client/src/main/java/" defaultexcludes="true">
+                <include name="**/HazelcastClient.java"/>
+                <exclude name="**/*.html"/>
+            </fileset>
+            <doctitle>
+                <![CDATA[<h1>Hazelcast</h1>]]>
+            </doctitle>
+            <bottom>
+                <![CDATA[<i>Copyright &#169; 2008-2009 Hazel Ltd. All Rights Reserved.</i>]]></bottom>
+            <link offline="false" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="C:\tmp"/>
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+            <link href="http://java.sun.com/products/servlet/2.3/javadoc/"/>
+        </javadoc>
+    </target>
+
+</project>
