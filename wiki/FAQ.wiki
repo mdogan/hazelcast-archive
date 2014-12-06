@@ -1,0 +1,36 @@
+#summary FAQ
+== Frequently Asked Questions ==
+*Q. Is data (say in a distributed map) replicated across all nodes, or partitioned?*
+
+	A. Partitioned with backup replicas. Regardless of the data type, your data will be almost evenly
+	distributed (partitioned) across all nodes. so each node owns about (1/N `*` total-data) and  carries backups of
+	other nodes in the cluster (N being the number of nodes in the cluster).
+
+*Q. If partitioned, is there a primary / secondary style replication?*
+
+	A. Yes. More correctly you can specify the number of backup replicas. There is a notion of first, second,
+	third backup replica internally but this is totally transparent to developers. You don't specify who is
+	primary or secondary, Hazelcast will automatically assign nodes based on your the replica-count you specify.
+
+*Q. What happens to data "owned" by a node when the node has a crash or clean shutdown?*
+
+	A. Data and its ownership, including the locks on them are immediately owned by the backup node.
+	Later on some of the data moves from the backup replica to the remaining live nodes for load-balancing.
+	No data gets lost. Again this is all transparent to the developer.
+
+*Q. What happens to data when a new node joins?*
+
+	A. New node takes ownership(responsibility) and load of -some- of the entire data in the cluster. Eventually the
+	new node will carry almost (1/N) of total-data + backups.
+
+*Q. Is there a single cluster master or a single point of failure in the Hazelcast cluster?*
+
+	A. No. Every node in the cluster has equal rights and responsibilities. No-one is superior. And no dependency on
+	a external 'server' or 'master' kind of stuff. 
+
+*Q. Is Hazelcast Operations Thread safe?*
+
+	A. Yes, All Hazelcast operations are thread safe. You can use Map, Queue, List, Set, Topic, MultiMap without any synchronization point. 
+
+*Q. Where you stand given CAP Theorem?*
+        A. Unless Partition occurs Hazelcast is always Consistent and Available. But when Partition occurs it doesn't stop but give ups Consistency for the sake of being Available. 

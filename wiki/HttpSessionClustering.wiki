@@ -1,0 +1,29 @@
+#summary Http Session Clustering with HazelcastWM
+*This documentation is out-dated and will be removed soon. Official Hazelcast documentation can be found at http://www.hazelcast.com/docs.jsp.
+
+== Requirements ==
+
+    * Target application or web server should support Java 1.5+
+    * Target application or web server should support Servlet 2.3+ spec
+    * Session objects that needs to be clustered have to be Serializable
+ 
+== Installation ==
+
+To cluster your web application, all you have to do is to use `clusterWebapp.bat` or `clusterWebapp.sh` scripts that comes with the Hazelcast distribution.
+
+{{{
+> clusterWebapp.bat war-file-path|ear-file-path
+}}}
+e.g
+{{{
+> clusterWebapp.bat myapp.ear
+> Done. New clustered application at C:\hazelcast-1.1\clustered-myapp.ear
+}}}      
+
+`clusterWebapp.bat|sh` will not modify the war/ear files passed in. Instead, it will create a new war/ear file and name it as `clustered-<app-file-name/>`. 
+
+You can pass multiple war and ear files. Besides if you pass `-apps-sharing-sessions` as an argument then your applications will be able to share the same sessions. If `-apps-sharing-sessions` argument is used, `hazelcast.jar` file will not be placed into the war/ear files so  you need to add `hazelcast.jar` into your application server's classpath.
+
+{{{
+> clusterWebapp.bat myapp.ear app1.war app2.war app3.war -apps-sharing-session
+}}} 

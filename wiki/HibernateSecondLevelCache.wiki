@@ -1,0 +1,119 @@
+#summary Hibernate Second Level Cache
+*IMPORTANT! This documentation is out-dated and will be removed soon. Official Hazelcast documentation can be found at http://www.hazelcast.com/docs.jsp.
+
+= Hibernate 2nd Level Cache =
+
+Hazelcast provides distributed second level cache for your Hibernate entities, collections and queries.
+Hazelcast has two implementations of Hibernate 2nd level cache, one for hibernate-pre-3.3 and one for
+hibernate-3.3.x versions. With release of hibernate-3.3.x, Hibernate now has a different api for 2nd level cache,
+although they have not mentioned this in their public documentation clearly.
+
+[http://docs.jboss.org/hibernate/core/3.3/reference/en/html/performance.html#performance-cache Hibernate 2nd Level Cache Documentation]
+
+== Common Configuration ==
+In your Hibernate configuration file (ex: hibernate.cfg.xml), add these properties; 
+  * To enable use of second level cache
+  {{{
+  <property name="hibernate.cache.use_second_level_cache">true</property>
+  }}}
+  * To enable use of query cache
+  {{{
+  <property name="hibernate.cache.use_query_cache">true</property>
+  }}}
+  * And to force minimal puts into cache
+  {{{
+  <property name="hibernate.cache.use_minimal_puts">true</property>
+  }}}
+  
+  * To configure Hazelcast for Hibernate, it is enough to put configuration file named `hazelcast.xml` into root of your classpath. If Hazelcast can not find `hazelcast.xml` then it will use default configuration from hazelcast.jar.
+   
+=== Additions By Version 1.9 ===
+   
+  * You can define custom named Hazelcast configuration xml file with one of these Hibernate configuration properties.
+  {{{
+  <property name="hibernate.cache.provider_configuration_file_resource_path">hazelcast-custom-config.xml</property>
+  }}}
+   
+  or 
+  {{{
+  <property name="hibernate.cache.hazelcast.configuration_file_path">hazelcast-custom-config.xml</property>
+  }}}
+
+  * You can set up Hazelcast to connect cluster as Super Client. Super Client is a member of the cluster, it has socket connection to every member in the cluster and it knows where the data, but does not contain any data. 
+  {{{  
+  <property name="hibernate.cache.hazelcast.use_super_client">true</property>
+  }}} 
+  
+  * You can set up Hazelcast to connect cluster as Native Client. Native client is not member and it connects to one of the cluster members and delegates all cluster wide operations to it. When the relied cluster member dies, client will transparently switch to another live member. _(Native Client property takes precedence over Super Client property.)_
+  {{{  
+  <property name="hibernate.cache.hazelcast.use_native_client">true</property>
+  }}} 
+
+  To setup Native Client properly, you should add Hazelcast *group-name*, *group-password* and *cluster member hosts* properties. Member hosts are comma-seperated addresses. Additionally you can add port number at the end of each address.
+  {{{
+  <property name="hibernate.cache.hazelcast.native_client_hosts">10.34.22.15,10.34.16.43:5702,127.0.0.1:5703</property>
+  <property name="hibernate.cache.hazelcast.native_client_group">dev</property>
+  <property name="hibernate.cache.hazelcast.native_client_password">dev-pass</property>
+  }}}
+  _To use Native Client you should add `hazelcast-client-<version>.jar` into your classpath._
+
+  [NativeClient Read more about NativeClient & SuperClient]
+
+== Cache Implementation Configuration ==
+  * If you are using one of Hibernate pre-3.3 version, add following property.
+  {{{
+  <property name="hibernate.cache.provider_class">com.hazelcast.hibernate.provider.HazelcastCacheProvider</property>
+  }}}
+  * If you are using Hibernate 3.3.x (or newer) version, you can choose to use either configuration property above (Hibernate has a built-in bridge to use old-style cache implementations) or following property.
+  {{{
+  <property name="hibernate.cache.region.factory_class">com.hazelcast.hibernate.HazelcastCacheRegionFactory</property>
+  }}}
+
+
+== Hazelcast Configuration per Region ==
+Hazelcast creates a seperate distributed map for each Hibernate cache region. 
+So these regions can be configured easily via Hazelcast map configuration. You can define *backup*, *eviction*, *TTL* and *Near Cache* properties.
+  # [MapBackup Backup Configuration]
+  # [MapEviction Eviction And TTL Configuration]
+  # [MapNearCache Near Cache Configuration]  
+
+== Cache Concurrency Strategy ==
+Hibernate has 4 cache concurrency strategies: _read-only_, _read-write_, _nonstrict-read-write_ and _transactional_. But Hibernate does not forces cache providers to support all strategies. And Hazelcast supports first three (*read-only*, *read-write*, *nonstrict-read-write*) of these four strategies. Hazelcast has not support for _transactional_ strategy yet.
+
+  * If you are using xml based class configurations, you should add a _cache_ element into your configuration with _usage_ attribute with one of _read-only_, _read-write_, _nonstrict-read-write_.
+  {{{
+  <class name="eg.Immutable" mutable="false">
+    <cache usage="read-only"/>
+    .... 
+  </class>
+
+  <class name="eg.Cat" .... >
+    <cache usage="read-write"/>
+    ....
+    <set name="kittens" ... >
+        <cache usage="read-write"/>
+        ....
+    </set>
+  </class>
+  }}}
+  * If you are using Hibernate-Annotations then you can add _class-cache_ or _collection-cache_ element into your Hibernate configuration file with _usage_ attribute with one of _read only_, _read/write_, _nonstrict read/write_.
+  {{{
+  <class-cache usage="read-only" class="eg.Immutable"/>
+
+  <class-cache usage="read-write" class="eg.Cat"/>
+
+  <collection-cache collection="eg.Cat.kittens" usage="read-write"/>
+  }}}
+
+  OR 
+  
+  * Alternatively, you can put Hibernate Annotation's _@Cache_ annotation on your entities and collections.
+  {{{
+  @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+  public class Cat implements Serializable {
+  ...
+  }
+  }}}
+  
+  
+And now last thing you should be aware of is to drop `hazelcast-hibernate-<version>.jar` into your classpath.

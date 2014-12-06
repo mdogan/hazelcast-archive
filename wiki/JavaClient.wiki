@@ -1,0 +1,26 @@
+#summary Dummy Java Client
+== Java Client ==
+
+You can do almost all hazelcast operations with Java Client. It already implements the same interface.
+You must include hazelcast-client.jar into your classpath.
+
+{{{
+    import com.hazelcast.core.HazelcastInstance;
+    import com.hazelcast.client.HazelcastClient;
+
+    import java.util.Map;
+    import java.util.Collection;
+
+
+    HazelcastInstance client = HazelcastClient.newHazelcastClient("dev", "dev-pass", "10.90.0.1", "10.90.0.2:5702");
+    //All Cluster Operations that you can do with ordinary HazelcastInstance
+    Map<String, Customer> mapCustomers = client.getMap("customers");
+    mapCustomers.put("1", new Customer("Joe", "Smith"));
+    mapCustomers.put("2", new Customer("Ali", "Selam"));
+    mapCustomers.put("3", new Customer("Avi", "Noyan"));
+
+    Collection<Customer> colCustomers = mapCustomers.values();
+    for (Customer customer : colCustomers) {
+         // process customer
+    }
+}}}

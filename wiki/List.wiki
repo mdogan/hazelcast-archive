@@ -1,0 +1,25 @@
+#summary Distributed List
+== Distributed List ==
+
+Distributed List is very similar to distributed set, but it allows duplicate elements.
+
+{{{
+import com.hazelcast.core.Hazelcast;
+import java.util.List;
+import java.util.Iterator;
+
+java.util.List list = Hazelcast.getList("IBM-Quote-Frequency");
+list.add(new Price(10));
+list.add(new Price(11));
+list.add(new Price(12));
+list.add(new Price(11));
+list.add(new Price(12));
+        
+//....
+Iterator it = list.iterator();
+while (it.hasNext()) { 
+	Price price = (Price) it.next(); 
+	//analyze
+}
+}}}
+    	

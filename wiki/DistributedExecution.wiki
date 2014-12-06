@@ -1,0 +1,56 @@
+#summary Distributed Execution with samples
+== Distributed Execution ==
+
+Distributed executor service is a distributed implementation of java.util.concurrent.ExecutorService.
+It allows you to execute your code in cluster. In this chapter, all the code samples are based on the Echo class above.
+Please note that Echo class is `Serializable`  .
+
+You can ask Hazelcast to execute your code (`Runnable, Callable`):
+    * on a specific cluster member you choose.
+    * on the member owning the key you choose.
+    * on the member Hazelcast will pick.
+    * on all or subset of the cluster members.
+
+{{{
+import com.hazelcast.core.Member;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.MultiTask;
+import com.hazelcast.core.DistributedTask;
+import java.util.concurrent.ExecutorService;   
+import java.util.concurrent.FutureTask;   
+import java.util.concurrent.Future;   
+import java.util.Set;
+
+public void echoOnTheMember(String input, Member member) throws Exception {
+       FutureTask<String> task = new DistributedTask<String>(new Echo(input), member);
+       ExecutorService executorService = Hazelcast.getExecutorService();
+       executorService.execute(task);
+       String echoResult = task.get();
+}
+
+public void echoOnTheMemberOwningTheKey(String input, Object key) throws Exception {
+       FutureTask<String> task = new DistributedTask<String>(new Echo(input), key);
+       ExecutorService executorService = Hazelcast.getExecutorService();
+       executorService.execute(task);
+       String echoResult = task.get();
+}
+
+public void echoOnSomewhere(String input) throws Exception { 
+       ExecutorService executorService = Hazelcast.getExecutorService();
+       Future<String> task = executorService.submit(new Echo(input));
+       String echoResult = task.get();
+}
+
+public void echoOnMembers(String input, Set<Member> members) throws Exception {
+       MultiTask<String> task = new MultiTask<String>(new Echo(input), members);
+       ExecutorService executorService = Hazelcast.getExecutorService();
+       executorService.execute(task);
+       Collection<String> results = task.get(); 
+} 
+}}}		
+
+Note that you can obtain the set of cluster members via `Hazelcast.getCluster().getMembers()` call.
+
+You can also extend the `MultiTask` class to override `set(V result), setException(Throwable exception), done()` methods for custom behaviour.
+
+Just like `java.util.concurrent.FutureTask.get() , MultiTask.get()` will throw `java.util.concurrent.ExecutionException` if any of the executions throws exception. 

@@ -1,0 +1,12 @@
+#summary HazelcastWM Tested Web Container List
+== Tested Web Containers ==
+
+Hazelcast Webapp Manager is designed to work with any application server that supports Servlet spec. 2.3 or higher and constantly tested on following containers:
+    * Tomcat5.0/5.5/6.0
+    * Jetty 5.1.12/5.1.14/6.1.10/6.1.11
+    * Weblogic 9.0/10
+    * Websphere 6.1
+    * GlassfishV3
+    * Caucho Resin 3.0.26
+
+Any application server that uses Tomcat or Jetty as its container such as JBoss and Geronimo should work just fine. 

@@ -1,0 +1,140 @@
+#summary Release Notes
+
+== Release Notes ==
+
+Please see, [Todo] page for planned features.
+
+*1.9.3*
+  * Re-implementation of distributed queue.
+    * Configurable backup-count and synchronous backup.
+    * Persistence support based on backing MapStore
+    * Auto-recovery from backing MapStore on startup.
+  * Re-implementation of distributed list supporting index based operations.
+  * New distributed semaphore implementation.
+  * Optimized `IMap.putAll` for much faster bulk writes.
+  * New `IMap.getAll` for bulk reads which is calling `MapLoader.loadAll` if necessary.
+  * New `IMap.tryLockAndGet` and `IMap.putAndUnlock` API
+  * New `IMap.putTransient` API for storing only in-memory.
+  * New `IMap.addLocalEntryListener()` for listening locally owned entry events.
+  * New `IMap.flush()` for flushing the dirty entries into MapStore.
+  * New `MapLoader.getAllKeys` API for auto-pre-populating the map when cluster starts.
+  * Support for min. initial cluster size to enable equally partitioned start.
+  * Graceful shutdown.
+  * Faster dead-member detection.
+
+
+*1.9*
+  * Memcache interface support. Memcache clients written in any language can access Hazelcast cluster.
+  * RESTful access support. http://<ip>:5701/hazelcast/rest/maps/mymap/key1
+  * Split-brain (network partitioning) handling
+  * New LifecycleService API to restart, pause Hazelcast instances and listen for the lifecycle events.
+  * New asynchronous put and get support for IMap via IMap.asyncPut() and IMap.asyncGet()
+  * New AtomicNumber API; distributed implementation of java.util.concurrent.atomic.AtomicLong
+  * So many bug fixes.
+
+
+*1.8.4*
+  * Significant performance gain for multi-core servers. Higher CPU utilization and lower latency.
+  * Reduced the cost of map entries by 50%.
+  * Better thread management. No more idle threads.
+  * Queue Statistics API and the queue statistics panel on the Monitoring Tool.
+  * Monitoring Tool enhancements. More responsive and robust.
+  * Distribution contains hazelcast-all-<version>.jar to simplify jar dependency.
+  * So many bug fixes.
+
+
+*1.8.3*
+  * Bug fixes
+  * Sorted index optimization for map queries.
+
+
+*1.8.2*
+  * A major bug fix
+  * Minor optimizations
+
+*1.8.1*
+  * Hazelcast Cluster Monitoring Tool (see the hazelcast-monitor-1.8.1.war in the distro)
+  * New Partition API. Partition and key owner, migration listeners.
+  * New IMap.lockMap() API.
+  * New Multicast+TCP/IP join feature. Try multicast first, if not found, try tcp/ip.
+  * New Hazelcast.getExecutorService(name) API. Have separate named ExecutorServices.
+  Do not let your big tasks blocking your small ones.
+  * New Logging API. Build your own logging. or simply use Log4j or get logs as LogEvents.
+  * New MapStatistics API. Get statistics for your Map operations and entries.
+  * HazelcastClient automatically updates the member list. no need to pass all members.
+  * Ability to start the cluster members evenly partitioned. so no migration.
+  * So many bug fixes and enhancements.
+  * There are some minor Config API change. Just make sure to re-compile.
+  
+*1.8*
+  * Java clients for accessing the cluster remotely. (C# is next)
+  * Distributed Query for maps. Both Criteria API and SQL support.
+  * Near cache for distributed maps.
+  * TTL (time-to-live) for each individual map entry.
+    * IMap.put(key,value, ttl, timeunit)
+    * IMap.putIfAbsent(key,value, ttl, timeunit)
+  * Many bug fixes.
+
+*1.7.1*
+  * Multiple Hazelcast members on the same JVM. New `HazelcastInstance` API.
+  * Better API based configuration support.
+  * Many performance optimizations. Fastest Hazelcast ever!
+  * Smoother data migration enables better response times during joins. 
+  * Many bug fixes.
+
+*1.7*
+  * Persistence via Loader/Store interface for distributed map.
+  * Socket level encryption. Both symmetric and asymmetric encryption supported.
+  * New JMX support. (many thanks to Marco)
+  * New Hibernate second level cache provider (many thanks to Leo)
+  * Instance events for getting notified when a data structure instance (map, queue, topic etc.) is created or destroyed.
+  * Eviction listener. `EntryListener.entryEvicted(EntryEvent)`
+  * Fully 'maven'ized.
+  * Modularized...
+       * hazelcast (core library)
+       * hazelcast-wm (http session clustering tool)
+       * hazelcast-ra (JCA adaptor)
+       * hazelcast-hibernate (hibernate cache provider)
+
+*1.6*
+  * Support for synchronous backups and configurable backup-count for maps.
+  * Eviction support. Timed eviction for queues. LRU, LFU and time based eviction for maps.
+  * Statistics/history for entries. create/update time, number of hits, cost. see `IMap.getMapEntry(key)`
+  * `MultiMap` implementation. similar to google-collections and apache-common-collections `MultiMap` but distributed and thread-safe.
+  * Being able to `destroy()` the data structures when not needed anymore.
+  * Being able to Hazelcast.shutdown() the local member.
+  * Get the list of all data structure instances via `Hazelcast.getInstances()`.
+
+*1.5*
+  * Major internal refactoring
+  * Full implementation of `java.util.concurrent.BlockingQueue`. Now queues can have configurable capacity limits. 
+  * Super Clients: Members with no storage. If `-Dhazelcast.super.client=true` JVM parameter is set, that JVM will join the cluster as a 'super client' which will not be a 'data partition' (no data on that node) but will have super fast access to the cluster just like any regular member does. 
+  * Http Session sharing support for Hazelcast Web Manager. Different webapps can share the same sessions.
+  * Ability to separate clusters by creating groups. [ConfigGroup]
+  * `java.util.logging` support.
+  
+*1.4*
+  * Add, remove and update events for queue, map, set and list
+  * Distributed Topic for pub/sub messaging
+  * Integration with J2EE transactions via JCA complaint resource adapter
+  * ExecutionCallback interface for distributed tasks
+  * Cluster-wide unique id generator 
+
+*1.3*
+  * Transactional Distributed Queue, Map, Set and List 
+
+*1.2*
+  * Distributed Executor Service
+  * Multi member executions
+  * Key based execution routing
+  * Task cancellation support
+  
+*1.1* 
+  * Session Clustering with Hazelcast Webapp Manager
+  * Full TCP/IP clustering support    
+  
+*1.0* 
+  * Distributed implementation of java.util.{Queue,Map,Set,List}
+  * Distributed implementation of java.util.concurrency.Lock
+  * Cluster Membership Events
+ 

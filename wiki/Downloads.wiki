@@ -1,0 +1,2 @@
+
+Hazelcast downloads are available at [http://www.hazelcast.com/downloads.jsp]

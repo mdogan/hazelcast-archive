@@ -1,0 +1,30 @@
+#summary Hazelcast Native Client
+== Native Client ==
+*This documentation is out-dated and will be removed soon. Official Hazelcast documentation can be found at http://www.hazelcast.com/docs.jsp.
+
+Native Client enables you to do all Hazelcast operations without being a member of the cluster. It connects to one of the
+cluster members and delegates all cluster wide operations to it. When the relied cluster member
+dies, client will transparently switch to another live member.
+
+There can be hundreds, even thousands of clients connected to the cluster.
+
+Imagine a trading application where all the trading data stored and managed in a 10 node Hazelcast cluster.
+Swing/Web applications at traders' desktops can use Native Java Client to access and modify the data in the Hazelcast cluster.
+
+Currently Hazelcast has Native Java Client available. The next client implementation will be CSharp.
+
+_*Super Client vs. Native Client*_
+
+Super Client is a member of the cluster, it has socket connection to every member in the cluster and it
+knows where the data is so it will get to the data much faster. But Super Client has the clustering
+overhead and it must be on the same data center even on the same RAC. However Native client is not member
+and relies on one of the cluster members. Native Clients can be anywhere in the LAN or WAN.
+It scales much better and overhead is quite less. So if your clients are less than Hazelcast nodes then
+Super client can be an option; otherwise definitely try Native Client. 
+As a rule of thumb: Try Native client first, if it doesn't perform well enough for you,
+then consider Super client. 
+
+
+The following picture describes the clients connecting to Hazelcast Cluster. Note the difference between Super Client and Java Client
+
+[http://www.hazelcast.com/resources/hazelcast-cluster-labels.png]

@@ -1,0 +1,8 @@
+#summary Hazelcast Clients
+== Hazelcast Clients ==
+*IMPORTANT! This documentation is out-dated and will be removed soon. Official Hazelcast documentation can be found at http://www.hazelcast.com/docs.jsp.
+
+There are currently three ways to connect to a running Hazelcast cluster:
+  # [NativeClient Native Clients]
+  # [MemcacheClient Memcache Clients]
+  # [RestClient REST Client]

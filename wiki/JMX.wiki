@@ -1,0 +1,52 @@
+#summary how-to use jmx to monitor nodes
+*IMPORTANT! This documentation is out-dated and will be removed soon. Official Hazelcast documentation can be found at http://www.hazelcast.com/docs.jsp.
+
+= Configuration =
+  * Add the following system properties to enable [http://download.oracle.com/javase/1.5.0/docs/guide/management/agent.html jmx agent]
+   * -Dcom.sun.management.jmxremote
+   * -Dcom.sun.management.jmxremote.port=_portNo_ (to specify jmx port) _optional_
+   * -Dcom.sun.management.jmxremote.authenticate=false (to disable jmx auth) _optional_
+  * Enable Hazelcast  property _hazelcast.jmx_
+   * using Hazelcast configuration (api, xml, spring)
+   * or set system property -Dhazelcast.jmx=true
+  * Use jconsole, jvisualvm (with mbean plugin) or another jmx-compliant monitoring tool.
+
+= Monitoring =
+
+Following attributes can be monitored:
+  * Cluster
+   * config
+   * group name
+   * count of members and their addresses (host:port)
+   * operations: restart, shutdown cluster  
+  * Member 
+   * inet address
+   * port
+   * super client state
+  * Statistics 
+   * count of instances
+   * number of instances created, destroyed since startup
+   * max instances created, destroyed per second
+  * AtomicNumber 
+   * name
+   * actual value
+   * operations: add, set, compareAndSet, reset
+  * List, Set
+   * name
+   * size
+   * items (as strings)
+   * operations: clear, reset statistics
+  * Map
+   * name
+   * size
+   * operations: clear
+  * Queue
+   * name
+   * size
+   * received and served items
+   * operations: clear, reset statistics
+  * Topic
+   * name   
+   * number of messages dispatched since creation, in last second
+   * max messages dispatched  per second
+   

@@ -1,0 +1,40 @@
+#summary Internals: Cluster Membership
+== Internals: Cluster Membership ==
+It is important to note that Hazelcast is a peer to peer clustering so there is no 'master' kind of server in
+Hazelcast. Every member in the cluster is equal and has the same rights and responsibilities.
+
+When a node starts up, it will check to see if there is already a cluster in the network.
+There are two ways to find this out:
+ * Multicast discovery: If multicast discovery is enabled (that is the defualt) then the node will send a join request in the form of a multicast datagram packet.
+ * Unicast discovery: if multicast discovery is disabled and `TCP/IP` join is enabled then the node will try to connect to he IPs defined in the `hazelcast.xml` configuration file. If it can successfully connect to at least one node, then it will send a join request through the `TCP/IP` connection.
+
+If there is no existing node, then the node will be the first member of the cluster. If multicast
+is enabled then it will start a multicast listener so that it can respond to incoming join requests.
+Otherwise it will listen for join request coming via `TCP/IP`.
+
+If there is an existing cluster already, then the oldest member in the cluster will receive the
+join request and check if the request is for the right group. If so, the oldest member in the cluster
+will start the join process. 
+
+In the join process, the oldest member will:
+ * send the new member list to all members
+ * tell members to sync data in order to balance the data load
+
+Every member in the cluster has the same member list in the same order. First member is the oldest
+member so if the oldest member dies, second member in the list becomes the first member in the
+list and the new oldest member.
+
+See `com.hazelcast.impl.Node` and `com.hazelcast.impl.ClusterManager` for details.
+
+_*Q. If, let say 50+, nodes are trying to join the cluster at the same time, are they going
+to join the cluster one by one?*_
+
+No. As soon as the oldest member receives the first valid join request, it will wait 5 seconds
+for others to join so that it can join multiple members in one shot. If there is no new node
+willing to join for the next 5 seconds, then oldest member will start the join process.
+If a member leaves the cluster though, because of a JVM crash for example, cluster will
+immediately take action and oldest member will start the data recovery process.
+
+
+
+

@@ -1,0 +1,6 @@
+#summary Wiki homepage for quick navigation
+== Where do you want to go today? ==
+  * [http://www.hazelcast.com/docs.jsp Documentation] 
+  * [http://www.hazelcast.com/gettingstarted.htm Video]
+  * [http://www.hazelcast.com/javadoc/index.html Javadoc]
+  * [http://groups.google.com/group/hazelcast Mail Group]

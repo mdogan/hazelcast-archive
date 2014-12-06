@@ -1,0 +1,20 @@
+#summary ToDo list, planned features
+*Planned Features*
+
+Random order of planned features.
+
+  * Native C# Client
+  * Native C++ Client
+  * Ready-to-go Hazelcast Cache Server Image for Amazon EC2
+  * Symmetric Encryption support for Java Client
+  * Continuous query (events based on given criteria)
+  * Distributed `java.util.concurrent.DelayQueue` implementation.
+  * Distributed `java.util.concurrent.CountDownLatch` implementation.
+  * Cluster-wide receive ordering for topics.
+  * Security (JAAS).
+  * Distributed Tree implementation.
+  * Distributed Tuple implementation. 
+  * Call interceptors for modifying the request or the response.
+  * Built-in file based storage.
+
+History of existing features is available at [ReleaseNotes Release Notes]. 

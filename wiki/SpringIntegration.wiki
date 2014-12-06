@@ -1,0 +1,150 @@
+#summary Hazelcast Spring integration
+*IMPORTANT! This documentation is out-dated and will be removed soon. Official Hazelcast documentation can be found at http://www.hazelcast.com/docs.jsp.
+
+= Beans Namespace =
+You can declare Hazelcast beans for Spring context using _beans_ namespace (default spring _beans_ namespace) as well to declare hazelcast maps, queues and others.
+
+*Hazelcast-Spring integration requires either hazelcast-spring jar or hazelcast-all jar in the classpath.*
+
+{{{
+<bean id="instance" class="com.hazelcast.core.Hazelcast" factory-method="newHazelcastInstance">
+    <constructor-arg>
+        <bean class="com.hazelcast.config.Config">
+            <property name="groupConfig">
+                <bean class="com.hazelcast.config.GroupConfig">
+                    <property name="name" value="dev"/>
+                    <property name="password" value="pwd"/>
+                </bean>
+            </property>
+            <!-- and so on ... -->
+        </bean>
+    </constructor-arg>
+</bean>
+
+<bean id="map" factory-bean="instance" factory-method="getMap">
+    <constructor-arg value="map"/>
+</bean>
+}}}
+
+= Hazelcast Namespace =
+
+Hazelcast has Spring integration (requires version 2.5 or greater) since 1.9.1 using _hazelcast_ namespace.
+
+  * Add namespace _xmlns:hz="http://www.hazelcast.com/schema/config"_ to beans tag in context file:
+{{{
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:hz="http://www.hazelcast.com/schema/config"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                http://www.hazelcast.com/schema/config
+                http://www.hazelcast.com/schema/config/hazelcast-spring.xsd">
+}}}
+  * Use _hz_ namespace shortcuts to declare cluster, its items and so on.
+
+== Hazelcast Instance ==
+After that you can configure Hazelcast instance (node):
+{{{
+<hz:hazelcast id="instance">
+        <hz:config>
+            <hz:group name="dev" password="password"/>
+            <hz:properties>
+                <hz:property name="hazelcast.merge.first.run.delay.seconds">5</hz:property>
+                <hz:property name="hazelcast.merge.next.run.delay.seconds">5</hz:property>
+            </hz:properties>
+            <hz:network port="5701" port-auto-increment="false">
+                <hz:join>
+                    <hz:multicast enabled="false"
+                                  multicast-group="224.2.2.3"
+                                  multicast-port="54327"/>
+                    <hz:tcp-ip enabled="true">
+                        <hz:members>10.10.1.2, 10.10.1.3</hz:members>
+                    </hz:tcp-ip>
+                </hz:join>
+            </hz:network>
+            <hz:map name="map"
+                    backup-count="2"
+                    max-size="0"
+                    eviction-percentage="30"
+                    read-backup-data="true"
+                    cache-value="true"
+                    eviction-policy="NONE"
+                    merge-policy="hz.ADD_NEW_ENTRY"/>
+        </hz:config>
+    </hz:hazelcast>
+}}}
+
+*As of version hazelcast 1.9.3*, you can easily configure map-store and near-cache too. (For map-store you should set either _class-name_ or _implementation_ attribute.)
+{{{
+ <hz:config>
+           <hz:map name="map1">          
+                    <hz:near-cache time-to-live-seconds="0" max-idle-seconds="60"
+                       eviction-policy="LRU" max-size="5000"  invalidate-on-change="true"/>
+
+                    <hz:map-store enabled="true" class-name="com.foo.DummyStore" 
+                        write-delay-seconds="0"/>
+           </hz:map>
+           
+          <hz:map name="map2">          
+                    <hz:map-store enabled="true" implementation="dummyMapStore" 
+                        write-delay-seconds="0"/>
+           </hz:map>
+  
+          <bean id="dummyMapStore" class="com.foo.DummyStore" />
+</hz:config>
+}}}
+
+It's possible to use placeholders instead of concrete values.
+
+For instance, use property file _app-default.properties_ for group configuration:
+{{{
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+        <list>
+            <value>classpath:/app-default.properties</value>
+        </list>
+    </property>
+</bean>
+
+<hz:hazelcast id="instance">
+    <hz:config>
+        <hz:group
+            name="${cluster.group.name}"
+            password="${cluster.group.password}"/>
+        <!-- ... -->
+    </hz:config>
+</hz:hazelcast>
+}}}
+
+== Hazelcast client ==
+Similar for client 
+{{{
+<hz:client id="client"
+    group-name="${cluster.group.name}" group-password="${cluster.group.password}">
+    <hz:members>10.10.1.2:5701, 10.10.1.3:5701</hz:members>
+</hz:client>
+}}}
+
+== Maps, Queues and so on ==
+You can declare beans for the following Hazelcast objects:
+  * map
+  * multiMap
+  * queue
+  * topic
+  * set
+  * list
+  * executorService
+  * idGenerator
+  * atomicNumber
+
+Example:
+{{{
+    <hz:map id="map" instance-ref="instance" name="map"/>
+    <hz:multiMap id="multiMap" instance-ref="instance" name="multiMap"/>
+    <hz:queue id="queue" instance-ref="instance" name="queue"/>
+    <hz:topic id="topic" instance-ref="instance" name="topic"/>
+    <hz:set id="set" instance-ref="instance" name="set"/>
+    <hz:list id="list" instance-ref="instance" name="list"/>
+    <hz:executorService id="executorService" instance-ref="instance" name="executorService"/>
+    <hz:idGenerator id="idGenerator" instance-ref="instance" name="idGenerator"/>
+    <hz:atomicNumber id="atomicNumber" instance-ref="instance" name="atomicNumber"/>
+}}}

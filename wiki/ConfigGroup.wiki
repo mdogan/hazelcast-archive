@@ -1,0 +1,15 @@
+#summary How to separate clusters
+== Creating Separate Clusters ==
+
+By specifying group-name and group-password, you can separate your clusters in a simple way. dev group, production group, test group, app-a group etc... a jvm can only participate in one group and it only joins to its own group, does not mess with others.
+
+{{{
+<hazelcast>
+	<group>
+		<name>dev</name>
+		<password>dev-pass</password>
+	</group>
+	...
+	
+</hazelcast>
+}}}

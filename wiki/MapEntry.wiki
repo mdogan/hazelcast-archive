@@ -1,0 +1,23 @@
+#summary Distributed Map Entry
+== Map Entry ==
+
+Hazelcast keeps extra information about each map entry such as creationTime, lastUpdateTime, lastAccessTime,
+number of hits, version, and this information is exposed to the developer via `IMap.getMapEntry(key)` call. Here is
+an example:
+{{{
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.MapEntry;
+
+MapEntry entry = Hazelcast.getMap("quotes").getMapEntry("1");
+System.out.println ("size in memory  : " + entry.getCost();
+System.out.println ("creationTime    : " + entry.getCreationTime();
+System.out.println ("expirationTime  : " + entry.getExpirationTime();
+System.out.println ("number of hits  : " + entry.getHits();
+System.out.println ("lastAccessedTime: " + entry.getLastAccessTime();
+System.out.println ("lastUpdateTime  : " + entry.getLastUpdateTime();
+System.out.println ("version         : " + entry.getVersion();
+System.out.println ("isValid         : " + entry.isValid();
+System.out.println ("key             : " + entry.getKey();
+System.out.println ("value           : " + entry.getValue();
+System.out.println ("oldValue        : " + entry.setValue(newValue);
+}}}
