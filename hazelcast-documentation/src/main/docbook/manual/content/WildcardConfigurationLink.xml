@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<para version="5.0" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+    <emphasis role="bold">To learn about wildcard configuration feature, see
+        <link
+                xlink:href="#WildcardConfiguration">Wildcard Configuration
+        </link>
+        page.
+    </emphasis>
+</para>
