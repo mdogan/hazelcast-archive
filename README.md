@@ -7,7 +7,7 @@ Hazelcast archive from old SVN repo before migrating to GitHub.
 - [1.9.2](https://github.com/mdogan/hazelcast-archive/tree/1.9.2)
 - [1.9.3](https://github.com/mdogan/hazelcast-archive/tree/1.9.3)
 - [1.9.4](https://github.com/mdogan/hazelcast-archive/tree/1.9.4)
-- [2.0](https://github.com/mdogan/hazelcast-archive/tree/2.0)- 
+- [2.0](https://github.com/mdogan/hazelcast-archive/tree/2.0)
 
 ### Releases
 - [1.5](https://github.com/mdogan/hazelcast-archive/tree/v1.5)
